@@ -5,6 +5,8 @@ format:
     toc: true
     number-sections: true
     css: styles.css
+execute:
+  output: true
 ---
 
 In *Archaeological networks, community detection, and critical scales of interaction in the U.S. Southwest/Mexican Northwest,* Peeples & Bischoff aim to identity what they call critical scales between communities in the SW/NW region. To do this, they use the similarity of ceramic ware styles between sites across distance to determine the bounds of ancient communities.
@@ -108,7 +110,10 @@ First, I converted `SWSN_Type` and `SWSN_Site` to just `Type` and `Site` in the 
 dj <- d |>
   left_join(ceramic |> mutate(Type = SWSN_Type) |> select(Type, Ware = SWSN_Ware), by = "Type") |>
   left_join(coords |> mutate(Site = SWSN_Site) |> select(Site, EASTING, NORTHING), by = "Site")
-print(dj)
+```
+
+``` R
+summary(dj)
 ```
 
 ### Filtering the dataset
@@ -131,7 +136,10 @@ dj2 <- d2 |>
   left_join(temp |> select(Site, remove), by = "Site") |>
   filter(remove == 1) |>
   select(-remove)
-print(dj2)
+```
+
+``` R
+summary(dj2)
 ```
 
 ### Binning the dataset by 50-year intervals
@@ -152,6 +160,9 @@ df <- dj2 |>
   mutate(interval = paste0(bin_starts, "-", bin_end)) |>
   select(-overlap_start, -overlap_end, -overlap_years) |>
   ungroup()
+```
+
+``` R
 print(df)
 ```
 
