@@ -191,7 +191,7 @@ Then we run the `BRsim` function. This will produce a matrix of comparisons betw
 \
 **WARNING:** This takes a good while to load. I'll try to upload a saved version alongside the .qmd in the repo but if not, just prepare to waste an hour or so on this.
 
-``` R
+``` r
 #Run similarity test on the subsetted data
 sim1400 <- BRsim(d1400)
 ```
@@ -279,7 +279,7 @@ Finally, with the adjusted Rand index for the community results matrix, I could 
 
 This means that the numbers saved into `pscale` represent the average critical scale or geographic distance associated with abrupt change per % of distance considered.
 
-To get these numbers I used the `e.agglo()` function from the aforementioned `:ecp:`
+To get these numbers I used the `e.agglo()` function from the aforementioned `:ecp:` and then isolated the estimates produced at the general level and the lowest quartile - which Peebles and Bischoff explain is to capture subdivisions better. I then removed the duplicates and combined the scales into a single file. This gets me the scales but not the distances. These scales represent
 
 ``` r
 #getting protoypical scales using :ecp:
@@ -292,6 +292,11 @@ scale2a <- scale2a[-length(scale2a)]
 scale <- sort(unique(c(scale1a, scale2a)))
 scale[1] <- 1
 scale <- unique(scale)
+```
+
+Getting the distances requires a loop for each partition or scale of community to see which distance is closest to all the other critical scales in each community at each distance considered.
+
+``` r
 #calculate prototypical distances for each partition and create data frame
 proto.typical <- NULL
 for (i in 1:(length(scale) - 1)) {
@@ -304,6 +309,8 @@ print(pscale)
 ```
 
 ## Plotting the ARI Heatmap
+
+Finally, I plot the result using `:ggplot:` after converting `rand_I` into a data frame so it can be read properly.
 
 ``` r
 #creating a dataframe for ggplot
@@ -336,6 +343,18 @@ print(ari) #this displays that during the final 50year span, there were 6 key pr
 
 Comparison with the original
 
-\<img src="images/fig4.jpg" width="###px"/\>
+<img src="images/fig4.jpg" width="###px"/>
 
 ## Final Review and Summary of Results
+
+Looking at the two images in comparison, my results closely follow the results from the original paper with similar placement of prototypical distances - the red dots - and similar community similarity over distance - the gradient.
+
+The big difference between the final statistic and Peeples and Bischoff is the amount of breakpoints on the graph. I seem to be recording MORE division between critical scales than they are, although clustered around broadly similar areas. This may be because they had some way to trim their data or collate the breakpoints to only include the largest gaps; however, they didn't outline this in their data. Alternatively this could stem from the errors observed in the descriptive statistics described earlier. I do find it interesting that the gradient - a.k.a the distances considered - are largely identical between my replication and the original
+
+### Conclusion
+
+In conclusion, I was able to replicate the usefulness of the ceramic ware similarity matrix for the 1400-1449 subset of the originally outlined data. While my results don't perfectly match the conclusions of the original test, they do imply more partitions - or scales of communities - than Peeples and Bischoff. This could have been due to an error in one of the many dense loops that built up the project or because I failed to apply uniform probability distribution analysis to the original dataset.
+
+I would have liked to have reproduced the more interesting figures and inferential statistics found in the comparison of periods. You'll have noticed my visual and inferential statistics are kinda combined. As said earlier and in class, this is because of the size of their datasets; I simply didn't have the time or hardware required to take on the creation of such large matrices. I'm not 100% satisfied with the amount of work I was able to do but I do believe that this was the closest replication I could produce given the restraints. I also believe that the visual above represents important inferential information as well as providing a visual summary.
+
+In summation, while Peeples and Bischoff likely operated with far more elegant loops, more custom functions, and more time/hardware, I was able to replicate their techniques by following their description in text, looking at the figures for comparison, and lots and lots of trial and error.
