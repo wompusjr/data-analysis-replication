@@ -112,7 +112,7 @@ dj <- d |>
   left_join(coords |> mutate(Site = SWSN_Site) |> select(Site, EASTING, NORTHING), by = "Site")
 ```
 
-``` R
+``` r
 summary(dj)
 ```
 
@@ -138,7 +138,7 @@ dj2 <- d2 |>
   select(-remove)
 ```
 
-``` R
+``` r
 summary(dj2)
 ```
 
@@ -162,7 +162,7 @@ df <- dj2 |>
   ungroup()
 ```
 
-``` R
+``` r
 print(df)
 ```
 
@@ -349,9 +349,9 @@ ari <- ggplot(ari_df, aes(x = x, y = y, fill = value)) +
     axis.title = element_text(size = 14),
     plot.title = element_text(size = 16, face = "bold")
   )
-#showing the plot
-par(mfrow=c(2,2))
-print("images/fig4")
+```
+
+``` R
 print(ari) #this displays that during the final 50year span, there were 6 key prototypical spans
 ```
 
