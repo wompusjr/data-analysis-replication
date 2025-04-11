@@ -1,7 +1,10 @@
 ---
 title: "Reanalysis Report"
-format: html
-editor: visual
+format:
+  html:
+    toc: true
+    number-sections: true
+    css: styles.css
 ---
 
 In *Archaeological networks, community detection, and critical scales of interaction in the U.S. Southwest/Mexican Northwest,* Peeples & Bischoff aim to identity what they call critical scales between communities in the SW/NW region. To do this, they use the similarity of ceramic ware styles between sites across distance to determine the bounds of ancient communities.

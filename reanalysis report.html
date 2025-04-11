@@ -69,12 +69,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="reanalysis report_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="fullcontent">
+<body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#loading-in-the-data-and-necessary-packages" id="toc-loading-in-the-data-and-necessary-packages" class="nav-link active" data-scroll-target="#loading-in-the-data-and-necessary-packages"><span class="header-section-number">1</span> Loading in the Data and Necessary Packages</a></li>
+  <li><a href="#creating-the-brsim-function" id="toc-creating-the-brsim-function" class="nav-link" data-scroll-target="#creating-the-brsim-function"><span class="header-section-number">2</span> Creating the <code>BRsim</code> function</a></li>
+  <li><a href="#combining-and-subsetting-the-data" id="toc-combining-and-subsetting-the-data" class="nav-link" data-scroll-target="#combining-and-subsetting-the-data"><span class="header-section-number">3</span> Combining and Subsetting the Data</a>
+  <ul class="collapse">
+  <li><a href="#joining-ceramics-and-coordinates-to-the-main-dataframe" id="toc-joining-ceramics-and-coordinates-to-the-main-dataframe" class="nav-link" data-scroll-target="#joining-ceramics-and-coordinates-to-the-main-dataframe"><span class="header-section-number">3.1</span> Joining ceramics and coordinates to the main dataframe</a></li>
+  <li><a href="#filtering-the-dataset" id="toc-filtering-the-dataset" class="nav-link" data-scroll-target="#filtering-the-dataset"><span class="header-section-number">3.2</span> Filtering the dataset</a></li>
+  <li><a href="#binning-the-dataset-by-50-year-intervals" id="toc-binning-the-dataset-by-50-year-intervals" class="nav-link" data-scroll-target="#binning-the-dataset-by-50-year-intervals"><span class="header-section-number">3.3</span> Binning the dataset by 50-year intervals</a></li>
+  <li><a href="#review-of-descriptive-analyses" id="toc-review-of-descriptive-analyses" class="nav-link" data-scroll-target="#review-of-descriptive-analyses"><span class="header-section-number">3.4</span> Review of Descriptive Analyses</a></li>
+  </ul></li>
+  <li><a href="#creating-the-1400-1450-similarity-matrix" id="toc-creating-the-1400-1450-similarity-matrix" class="nav-link" data-scroll-target="#creating-the-1400-1450-similarity-matrix"><span class="header-section-number">4</span> Creating the 1400-1450 Similarity Matrix</a></li>
+  <li><a href="#making-the-coordinate-matrix" id="toc-making-the-coordinate-matrix" class="nav-link" data-scroll-target="#making-the-coordinate-matrix"><span class="header-section-number">5</span> Making the Coordinate Matrix</a></li>
+  <li><a href="#louvain-community-detection" id="toc-louvain-community-detection" class="nav-link" data-scroll-target="#louvain-community-detection"><span class="header-section-number">6</span> Louvain Community Detection</a></li>
+  <li><a href="#adjusted-rand-index-for-1400-1450-communities" id="toc-adjusted-rand-index-for-1400-1450-communities" class="nav-link" data-scroll-target="#adjusted-rand-index-for-1400-1450-communities"><span class="header-section-number">7</span> Adjusted Rand Index for 1400-1450 Communities</a></li>
+  <li><a href="#prototypical-scales-and-breakpoints" id="toc-prototypical-scales-and-breakpoints" class="nav-link" data-scroll-target="#prototypical-scales-and-breakpoints"><span class="header-section-number">8</span> Prototypical Scales and Breakpoints</a></li>
+  <li><a href="#plotting-the-ari-heatmap" id="toc-plotting-the-ari-heatmap" class="nav-link" data-scroll-target="#plotting-the-ari-heatmap"><span class="header-section-number">9</span> Plotting the ARI Heatmap</a></li>
+  <li><a href="#final-review-and-summary-of-results" id="toc-final-review-and-summary-of-results" class="nav-link" data-scroll-target="#final-review-and-summary-of-results"><span class="header-section-number">10</span> Final Review and Summary of Results</a>
+  <ul class="collapse">
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">10.1</span> Conclusion</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -100,8 +127,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Breaking this work down into steps, they use a list of SWSN sites, ceramic types, ceramic wares, and UTM coordinates (stored in 3 different .csv files) to subset the periods and sites they’re interested in before conducting Louvain method tests of community detection, creating Rand Indexes for these tests, and determining prototypical scales or breaklines for each test. I’ll be using the <code>attr_all</code> data sheet for coordinates, <code>Ceramic_type_master</code> for ceramic wares, and <code>data_all</code> for the sites and dates.</p>
 <p>Peeples &amp; Bischoff aren’t making a claim about whether or not there ARE communities or critical scales for the SW/NW. Instead their conclusions focus about HOW those communities take shape and change over time. In this way, their work reaffirms the usage of their methodologies, the continuity between groups, and where these inevitable spatial relationships change.</p>
 <p>Due to the immense scale of producing multiple extremely long matrices per 50-year interval, I couldn’t replicate most of the more intriguing inter-interval tests without wasting dozens of hours on loading in data. Instead of fI focused on reproducing the methodology outlined in the section on Rand Indexes. I would up replicating <strong>the site list’s descriptive data</strong>, the <strong>inferential data around the 1400-1450AD matrix</strong>, and the <strong>visual depicting 1400-1450AD’s Rand Index with breaklines.</strong> To wit, this means I’m attempting to focus in on their conclusions about methodology and the shape of spatial relationships and will sadly have to ignore their most interesting conclusions.</p>
-<section id="loading-in-the-data-and-necessary-packages" class="level2">
-<h2 class="anchored" data-anchor-id="loading-in-the-data-and-necessary-packages">Loading in the Data and Necessary Packages</h2>
+<section id="loading-in-the-data-and-necessary-packages" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="loading-in-the-data-and-necessary-packages"><span class="header-section-number">1</span> Loading in the Data and Necessary Packages</h2>
 <p>Prior to loading in the data I downloaded and set up the following packages. Peeples and Bischoff outline <code>:igraph:</code> and <code>:ecp:</code> for their functions explicitly and <code>:sna:</code> and <code>:fossil:</code> by proxy. Other packages like <code>:tidyverse:</code> or <code>:foreach:</code> were necessary for other processes (such as proper looping or piping) as they emerged.</p>
 <p>The data was taken from this gitHub repository “<a href="https://github.com/mpeeples2008/CriticalScales" class="uri">https://github.com/mpeeples2008/CriticalScales</a>” and is stored in the data folder of this repository. I’ve loaded the head of some of the basic data to get a grasp on the information.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#necessary libraries</span></span>
@@ -126,8 +153,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ceramic)</span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(coords)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="creating-the-brsim-function" class="level2">
-<h2 class="anchored" data-anchor-id="creating-the-brsim-function">Creating the <code>BRsim</code> function</h2>
+<section id="creating-the-brsim-function" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="creating-the-brsim-function"><span class="header-section-number">2</span> Creating the <code>BRsim</code> function</h2>
 <p>Before I begin handling the data I loaded in the custom function, <code>:BRsim:</code> which is meant to replicate the Brainerd-Robinson measure of similarity. Peeples and Bischoff provide the following equation;</p>
 <p><code>S = 2-sum(CeramicWare)*proportion of Wares at site A - proportion of Wares at site B / 2</code>.</p>
 <p>This would have been a pain to try and reconstruct and I did produce some early drafts; however, I found a custom-made function from this link; <a href="https://cainarchaeology.weebly.com/r-function-for-brainerd-robinson-similarity-coefficient.html" class="uri">https://cainarchaeology.weebly.com/r-function-for-brainerd-robinson-similarity-coefficient.html</a>. I adapted this lightly to produce a high-quality function</p>
@@ -169,12 +196,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(sim_matrix)</span>
 <span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="combining-and-subsetting-the-data" class="level2">
-<h2 class="anchored" data-anchor-id="combining-and-subsetting-the-data">Combining and Subsetting the Data</h2>
+<section id="combining-and-subsetting-the-data" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="combining-and-subsetting-the-data"><span class="header-section-number">3</span> Combining and Subsetting the Data</h2>
 <p>After loading in the data, packages, and creating a custom simulation function, my next task was to produce the descriptive statistics mentioned in the article. For this, I had to subset the data according to their specifications. They provided the following terms;</p>
 <p><em>“we use data from a set of 1,790 settlements across the study area dating between 1000 and 1450 CE. The settlements selected are <strong>limited to those with at least 10 rooms and 30 systematically identified painted ceramic sherds</strong> (see Mills et al.&nbsp;2013: Supplemental Materials for a discussion of the selection of sample size cut offs).”</em></p>
-<section id="joining-ceramics-and-coordinates-to-the-main-dataframe" class="level3">
-<h3 class="anchored" data-anchor-id="joining-ceramics-and-coordinates-to-the-main-dataframe">Joining ceramics and coordinates to the main dataframe</h3>
+<section id="joining-ceramics-and-coordinates-to-the-main-dataframe" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="joining-ceramics-and-coordinates-to-the-main-dataframe"><span class="header-section-number">3.1</span> Joining ceramics and coordinates to the main dataframe</h3>
 <p>First, I converted <code>SWSN_Type</code> and <code>SWSN_Site</code> to just <code>Type</code> and <code>Site</code> in the <code>ceramic</code> and <code>coords</code> datasets respectively. This allowed an easy <code>left_join()</code> that brought the relevant data (<code>Ware</code>, <code>EASTING</code>, and <code>NORTHING</code>) into the main dataset.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Clean and join to main dataframe</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>dj <span class="ot">&lt;-</span> d <span class="sc">|&gt;</span></span>
@@ -182,8 +209,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(coords <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">Site =</span> SWSN_Site) <span class="sc">|&gt;</span> <span class="fu">select</span>(Site, EASTING, NORTHING), <span class="at">by =</span> <span class="st">"Site"</span>)</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(dj)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="filtering-the-dataset" class="level3">
-<h3 class="anchored" data-anchor-id="filtering-the-dataset">Filtering the dataset</h3>
+<section id="filtering-the-dataset" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="filtering-the-dataset"><span class="header-section-number">3.2</span> Filtering the dataset</h3>
 <p>From there, the dataset had to be filtered to only include sites with at least 30 painted sherds dating between 1000 and 1450. What made this difficult is that each site wasn’t recorded as a whole unit, instead each instance of a ceramic type at a site was recorded. I tried multiple different paths to filtering by site but this way seemed to work the best but is perhaps, a little janky.</p>
 <p>This way I created a temporary tibble with a column indicating if size is equal to or greater than 30 for a summarized count by <code>Site</code> and then I appended that column to the main data frame and filtered the new joined data frame by the indicative column. I then deleted the column as it was useless.</p>
 <p><strong>Important Note:</strong> In their original text they don’t say explicitly that they sorted by <code>cyberSW == 1</code>; however, all of their sites had to be positioned onto cyberSW in order to be mapped and other files reference cyberSW. Due to this, I thought it was best to filter out any site that didn’t have a column indicating corresponding information in the cyberSW database (the purpose of the <code>cyberSW</code> column in <code>"data_all"</code>)</p>
@@ -200,8 +227,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>remove)</span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(dj2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="binning-the-dataset-by-50-year-intervals" class="level3">
-<h3 class="anchored" data-anchor-id="binning-the-dataset-by-50-year-intervals">Binning the dataset by 50-year intervals</h3>
+<section id="binning-the-dataset-by-50-year-intervals" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="binning-the-dataset-by-50-year-intervals"><span class="header-section-number">3.3</span> Binning the dataset by 50-year intervals</h3>
 <p>Finally, I binned the dataset into nine 50-year intervals stretching from 1000 to 1450 (although technically 1449) to follow what Peeples and Bischoff outline in their paper.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Binning temporal intervals</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> dj2 <span class="sc">|&gt;</span></span>
@@ -218,8 +245,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="review-of-descriptive-analyses" class="level3">
-<h3 class="anchored" data-anchor-id="review-of-descriptive-analyses">Review of Descriptive Analyses</h3>
+<section id="review-of-descriptive-analyses" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="review-of-descriptive-analyses"><span class="header-section-number">3.4</span> Review of Descriptive Analyses</h3>
 <p>Comparing to the original numbers given <em>“1790 sites…..1100+ ceramic types”</em> my dataset looks largely similar, but isn’t completely similar. My types fall in line - with 1156 ceramic types in the base data set and 295 in my subsetted data set. Its my analysis of <code>Sites</code> that seem to provide odd information. While only off by a small margin sites, I have 24 sites fewer than Peeples and Bischoff. This is probably from one of three sources or some combination;</p>
 <ul>
 <li><p>A - this could be due to my inclusion of filtering by <code>cyberSW == 1</code> but in my own workflow I found that that didn’t provide 1790 either. So it’s possible there was something they mentioned in passing or not at all that explains how they handled <code>cyberSW</code></p></li>
@@ -237,8 +264,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="do">###im not entirely certain, but it could relate to the room-size variable that wasn't on the dataset</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
-<section id="creating-the-1400-1450-similarity-matrix" class="level2">
-<h2 class="anchored" data-anchor-id="creating-the-1400-1450-similarity-matrix">Creating the 1400-1450 Similarity Matrix</h2>
+<section id="creating-the-1400-1450-similarity-matrix" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="creating-the-1400-1450-similarity-matrix"><span class="header-section-number">4</span> Creating the 1400-1450 Similarity Matrix</h2>
 <p>Before we can properly run the matrix of similarity, we have to subset the data one last time and rearrange it so that the matrix can function properly. <code>BRsim</code> was returning errors if <code>d1400</code> wasn’t structured completely numerically and recombined the columns to represent the counts of all Wares found in the data and rows to be the sites felt more logical, especially as I was visualizing and working with the resulting tables.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Building data for 1400–1449 interval</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>d1400 <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
@@ -253,8 +280,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Run similarity test on the subsetted data</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>sim1400 <span class="ot">&lt;-</span> <span class="fu">BRsim</span>(d1400)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="making-the-coordinate-matrix" class="level2">
-<h2 class="anchored" data-anchor-id="making-the-coordinate-matrix">Making the Coordinate Matrix</h2>
+<section id="making-the-coordinate-matrix" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="making-the-coordinate-matrix"><span class="header-section-number">5</span> Making the Coordinate Matrix</h2>
 <p>Next, we have to compare the similarity matrix to a matrix of distances between those same site pairs. For that, I drew out the UTM coordinates from <code>df</code> and then converted them into a matrix called <code>coordmatrix</code>. I then manually set the row names and column names to be <code>Site</code> because otherwise it threw off later combinations.</p>
 <p>I then had to run an <code>intersect()</code> between the rownames of <code>sim1400</code> and <code>coordmatrix</code> to get a list of sites that show up in both and then filtered by those sites. Otherwise these matrices would produce different sized results and couldn’t be combined for the Louvain method.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create the distance matrix</span></span>
@@ -270,8 +297,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sim1400)</span>
 <span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(coordmatrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="louvain-community-detection" class="level2">
-<h2 class="anchored" data-anchor-id="louvain-community-detection">Louvain Community Detection</h2>
+<section id="louvain-community-detection" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="louvain-community-detection"><span class="header-section-number">6</span> Louvain Community Detection</h2>
 <p>This was one of the biggest processes in the project because it required a 100 increment long loop that calculated communities each time. Peeples and Bischoff outline that for their Louvain community detection model they ran it at every percentile from 100% to 1% to see where the prototypical distances, or the representative distance for groups, changed.<br>
 </p>
 <p>The loop itself required setting up a storage matrix, then creating a binary matrix version of <code>coordmatrix</code> to calculate distance. After that, I combined the <code>distmatrix</code> to <code>sim1400</code> (removing N/As) to have the appropriate filler for the <code>cluster_louvain</code> function from <code>:igraph:</code> which I discovered only works on graphs. This graph had to be undirected and derived from the <code>community</code> matrix.</p>
@@ -295,8 +322,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  res[, i] <span class="ot">&lt;-</span> <span class="fu">cluster_louvain</span>(G, <span class="at">weights =</span> <span class="fu">E</span>(G)<span class="sc">$</span>weight)<span class="sc">$</span>membership</span>
 <span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="adjusted-rand-index-for-1400-1450-communities" class="level2">
-<h2 class="anchored" data-anchor-id="adjusted-rand-index-for-1400-1450-communities">Adjusted Rand Index for 1400-1450 Communities</h2>
+<section id="adjusted-rand-index-for-1400-1450-communities" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="adjusted-rand-index-for-1400-1450-communities"><span class="header-section-number">7</span> Adjusted Rand Index for 1400-1450 Communities</h2>
 <p>After running the community matrix, I had to pass it through another loop at each percentile creating an adjusted Rand index. Peeples and Bischoff outline the equation as</p>
 <p><code>`R = the number of pairs of items that are in the same community in both partitions&nbsp;X&nbsp;and Y + the number of items that are in different communities in both&nbsp;X&nbsp;and Y / total count of pairs in the relationships considered</code></p>
 <p>Luckily, <code>:fossil:</code> has the <code>adj.rand.index()</code> function which does all of that calculation for me, I just needed to run a loop to collate the results and then filter out any NAs.</p>
@@ -313,8 +340,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>rand_index[<span class="fu">is.na</span>(rand_index)] <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co">#sorting out NAs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="prototypical-scales-and-breakpoints" class="level2">
-<h2 class="anchored" data-anchor-id="prototypical-scales-and-breakpoints">Prototypical Scales and Breakpoints</h2>
+<section id="prototypical-scales-and-breakpoints" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="prototypical-scales-and-breakpoints"><span class="header-section-number">8</span> Prototypical Scales and Breakpoints</h2>
 <p>Finally, with the adjusted Rand index for the community results matrix, I could apply that to get the prototypical scales using the <code>:ecp:</code> package that Peeples and Bischoff cite directly. Importantly, prototypical scales are defined as;</p>
 <p><em>“the distance between a pair of identified critical scales that is is most similar to all other distances within the same sub-division.”</em></p>
 <p>This means that the numbers saved into <code>pscale</code> represent the average critical scale or geographic distance associated with abrupt change per % of distance considered.</p>
@@ -340,8 +367,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(pscale) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'X'</span>)</span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pscale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="plotting-the-ari-heatmap" class="level2">
-<h2 class="anchored" data-anchor-id="plotting-the-ari-heatmap">Plotting the ARI Heatmap</h2>
+<section id="plotting-the-ari-heatmap" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="plotting-the-ari-heatmap"><span class="header-section-number">9</span> Plotting the ARI Heatmap</h2>
 <p>Finally, I plot the result using <code>:ggplot:</code> after converting <code>rand_I</code> into a data frame so it can be read properly.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#creating a dataframe for ggplot</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>ari_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(rand_I) <span class="sc">|&gt;</span></span>
@@ -372,12 +399,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Comparison with the original</p>
 <p><img src="images/fig4.jpg" width="###px"></p>
 </section>
-<section id="final-review-and-summary-of-results" class="level2">
-<h2 class="anchored" data-anchor-id="final-review-and-summary-of-results">Final Review and Summary of Results</h2>
+<section id="final-review-and-summary-of-results" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="final-review-and-summary-of-results"><span class="header-section-number">10</span> Final Review and Summary of Results</h2>
 <p>Looking at the two images in comparison, my results closely follow the results from the original paper with similar placement of prototypical distances - the red dots - and similar community similarity over distance - the gradient.</p>
 <p>The big difference between the final statistic and Peeples and Bischoff is the amount of breakpoints on the graph. I seem to be recording MORE division between critical scales than they are, although clustered around broadly similar areas. This may be because they had some way to trim their data or collate the breakpoints to only include the largest gaps; however, they didn’t outline this in their data. Alternatively this could stem from the errors observed in the descriptive statistics described earlier. I do find it interesting that the gradient - a.k.a the distances considered - are largely identical between my replication and the original</p>
-<section id="conclusion" class="level3">
-<h3 class="anchored" data-anchor-id="conclusion">Conclusion</h3>
+<section id="conclusion" class="level3" data-number="10.1">
+<h3 data-number="10.1" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">10.1</span> Conclusion</h3>
 <p>In conclusion, I was able to replicate the usefulness of the ceramic ware similarity matrix for the 1400-1449 subset of the originally outlined data. While my results don’t perfectly match the conclusions of the original test, they do imply more partitions - or scales of communities - than Peeples and Bischoff. This could have been due to an error in one of the many dense loops that built up the project or because I failed to apply uniform probability distribution analysis to the original dataset.</p>
 <p>I would have liked to have reproduced the more interesting figures and inferential statistics found in the comparison of periods. You’ll have noticed my visual and inferential statistics are kinda combined. As said earlier and in class, this is because of the size of their datasets; I simply didn’t have the time or hardware required to take on the creation of such large matrices. I’m not 100% satisfied with the amount of work I was able to do but I do believe that this was the closest replication I could produce given the restraints. I also believe that the visual above represents important inferential information as well as providing a visual summary.</p>
 <p>In summation, while Peeples and Bischoff likely operated with far more elegant loops, more custom functions, and more time/hardware, I was able to replicate their techniques by following their description in text, looking at the figures for comparison, and lots and lots of trial and error.</p>
