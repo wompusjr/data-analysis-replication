@@ -248,6 +248,14 @@ for (i in 1:100) {
 
 ## Adjusted Rand Index for 1400-1450 Communities
 
+After running the community matrix, I had to pass it through another loop at each percentile creating an adjusted Rand index. Peeples and Bischoff outline the equation as
+
+`` `R = the number of pairs of items that are in the same community in both partitions X and Y + the number of items that are in different communities in both X and Y / total count of pairs in the relationships considered ``
+
+Luckily, `:fossil:` has the `adj.rand.index()` function which does all of that calculation for me, I just needed to run a loop to collate the results and then filter out any NAs.
+
+I also had to set up `registerDoParallel()` to speed up this process, because this creates a criminally massive list.
+
 **WARNING:** This takes a good while to load. I'll try to upload a saved version alongside the .qmd in the repo but if not, just prepare to waste an hour or so on this.
 
 ``` r
@@ -265,11 +273,19 @@ rand_index[is.na(rand_index)] <- 0 #sorting out NAs
 
 ## Prototypical Scales and Breakpoints
 
+Finally, with the adjusted Rand index for the community results matrix, I could apply that to get the prototypical scales using the `:ecp:` package that Peeples and Bischoff cite directly. Importantly, prototypical scales are defined as;
+
+*"the distance between a pair of identified critical scales that is is most similar to all other distances within the same sub-division."*
+
+This means that the numbers saved into `pscale` represent the average critical scale or geographic distance associated with abrupt change per % of distance considered.
+
+To get these numbers I used the `e.agglo()` function from the aforementioned `:ecp:`
+
 ``` r
 #getting protoypical scales using :ecp:
 scale1 <- e.agglo(rand_I, alpha = 1, penalty = function(cp, Xts)0) # calculate across all distances
 scale1a <- scale1$estimates - 1 #isolating the estimates
-scale2 <- e.agglo(rand_I[1:25, 1:25], alpha = 1.5, penalty = function(cp, Xts)0) # calculate within the lowest quartile
+scale2 <- e.agglo(rand_I[1:25, 1:25], alpha = 1.5, penalty = function(cp, Xts)0) # calculate within the lowest quartile as Peebles and Bischoff say to do
 scale2a <- scale2$estimates - 1 #isolating the estimates
 scale2a <- scale2a[-length(scale2a)]
 # combine and remove duplicates
@@ -317,5 +333,9 @@ par(mfrow=c(2,2))
 print("images/fig4")
 print(ari) #this displays that during the final 50year span, there were 6 key prototypical spans
 ```
+
+Comparison with the original
+
+\<img src="images/fig4.jpg" width="###px"/\>
 
 ## Final Review and Summary of Results
